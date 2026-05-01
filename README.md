@@ -12,8 +12,10 @@ Repository of my python projects. Here list of them:
 
 - Converter (length and temperature)
 
+- Trigonomentry (sin cos tan etc)
+
 \#\# Todo
 
-- Make code normal
+- More operations
 
-\# ALERT! THIS IS OLD VERSION THAT I FORGOT TO PUSH (and I decided to push it anyways)
+- Make history of actions
