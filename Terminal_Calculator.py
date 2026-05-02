@@ -20,19 +20,21 @@ convert_list = {
     ('f', 'c'): lambda a: (a - 32) * 5 / 9,
     }
 trigon_list = {
-    ('sin', 'deg'): lambda a: round(math.sin(math.radians(a)), 12),
-    ('cos', 'deg'): lambda a: round(math.cos(math.radians(a)), 12),
-    ('tan', 'deg'): lambda a: round(math.tan(math.radians(a)), 12),
-    ('sin', 'rad'): lambda a: round(math.sin(a), 12),
-    ('cos', 'rad'): lambda a: round(math.cos(a), 12),
-    ('tan', 'rad'): lambda a: round(math.tan(a), 12),
-    ('asin', 'deg'): lambda a: round(math.degrees(math.asin(a)), 12),
-    ('acos', 'deg'): lambda a: round(math.degrees(math.acos(a)), 12),
-    ('atan', 'deg'): lambda a: round(math.degrees(math.atan(a)), 12),
-    ('asin', 'rad'): lambda a: round(math.asin(a), 12),
-    ('acos', 'rad'): lambda a: round(math.acos(a), 12),
-    ('atan', 'rad'): lambda a: round(math.atan(a), 12),
+    ('sin', 'deg'): lambda a: math.sin(math.radians(a)),
+    ('cos', 'deg'): lambda a: math.cos(math.radians(a)),
+    ('tan', 'deg'): lambda a: math.tan(math.radians(a)),
+    ('sin', 'rad'): lambda a: math.sin(a),
+    ('cos', 'rad'): lambda a: math.cos(a),
+    ('tan', 'rad'): lambda a: math.tan(a),
+    ('asin', 'deg'): lambda a: math.degrees(math.asin(a)),
+    ('acos', 'deg'): lambda a: math.degrees(math.acos(a)),
+    ('atan', 'deg'): lambda a: math.degrees(math.atan(a)),
+    ('asin', 'rad'): lambda a: math.asin(a),
+    ('acos', 'rad'): lambda a: math.acos(a),
+    ('atan', 'rad'): lambda a: math.atan(a),
     }
+#Initial settings
+rounder = 12
 #Start
 print('Welcome to Terminal Calculator!\nDon`t know commands? Try to print \'help\'!')
 while True:
@@ -40,7 +42,14 @@ while True:
         enter = input('> ').lower()
 #Operations
     #Program Commands
-        if enter == 'help':
+        commands_match = re.match(r'^\s*(round)\s*(\d+)\s*$', enter)
+        if commands_match:
+            #Used for commands with numbers
+            command = commands_match.group(1)
+            command_num = int(commands_match.group(2))
+            if command == 'round':
+                rounder = command_num
+        elif enter == 'help':
             print('To use calculator print what you want (Example: 1+1; 1-1; etc)\nYou can also print \'list\' for more details!')
         elif enter == 'list':
             print('Here list of all operations (\'x\' means your number)\n___Basic operations___\nx+x (for add)\nx-x (for subtract)\nx*x (for multiply)\nx/x (for divide)\n___Advenced operations___\nx^x (for power)\nsqrtx (for square root)\nx% of x (for finding the % of you number)\n___Convert operations___\nx cm to in (for converting centimeters to inches)\nx in to cm (for converting inches to centimeters)\nx m to ft (for converting meters to feets)\nx ft to m (for converting feet to meters)\nx km to mi (for converting kilometers to miles)\nx mi to km (for converting miles to kilometers)\nx C to F (for converting Celsius to Fahrenheit)\nx F to C (for converting Fahrenheit to Celsius)\n___Trigonometry operations___\nsin/cos/tan x deg/rad (for finding sinus or cosinus or tangens with degreees or radians)')
@@ -52,28 +61,44 @@ while True:
         percent_match = re.match(r'^\s*(\d+\.?\d*)\s*(%)\s*(of)\s*(\d+\.?\d*)\s*$', enter)
         convert_match = re.match(r'^\s*(\d+\.?\d*)\s*(cm|in|m|ft|km|mi|c|f)\s*(to)\s*(cm|in|m|ft|km|mi|c|f)\s*$', enter)
         trigon_match = re.match(r'^\s*(sin|cos|tan|asin|acos|atan)\s*(\d+\.?\d*)\s*(deg|rad)\s*$', enter)
+        log_match = re.match(r'^\s*(log|lg|ln)\s*(\d*)\s*(_)\s*(\d+\.?\d*)\s*$', enter)
     #Operations
         if basic_match:
             num1 = float(basic_match.group(1))
             operator = basic_match.group(2)
             num2 = float(basic_match.group(3))
-            print(f'= {basic_list[operator](num1, num2)}')
+            print(f'= {round(basic_list[operator](num1, num2), rounder)}')
         elif sqrt_match:
             num = float(sqrt_match.group(2))
-            print(f'= {math.sqrt(num1)}')
+            print(f'= {round(math.sqrt(num1), rounder)}')
         elif percent_match:
             percent = float(percent_match.group(1))
             total = float(percent_match.group(4))
-            print(f'= {total * percent / 100}')
+            print(f'= {round(total * percent / 100, rounder)}')
         elif convert_match:
             num = float(convert_match.group(1))
             value1 = convert_match.group(2)
             value2 = convert_match.group(4)
-            print(f'= {convert_list[value1, value2](num)}')
+            print(f'= {round(convert_list[value1, value2](num), rounder)}')
         elif trigon_match:
             operator = trigon_match.group(1)
             num = float(trigon_match.group(2))
             dORr = trigon_match.group(3)
-            print(f'= {trigon_list[operator, dORr](num)}')
+            print(f'= {round(trigon_list[operator, dORr](num), rounder)}')
+        elif log_match:
+        #Has been error if you try to log_10 (try to use basic log with base 10)
+        #So i decided to make this + its much shorter:
+            log = log_match.group(1)
+            argument = float(log_match.group(4))
+            if log == 'log':
+                try:
+                    base = float(log_match.group(2))
+                    print(f'= {round(math.log(argument, base), rounder)}')
+                except ValueError:
+                    print(f'= {round(math.log10(argument), rounder)}')
+            elif log == 'ln':
+                print(f'= {round(math.log(argument, math.e), rounder)}')
+            elif log == 'lg':
+                print(f'= {round(math.log2(argument), rounder)}')
     except ValueError:
         print('Value Error!')
