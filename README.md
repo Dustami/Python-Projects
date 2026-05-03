@@ -6,15 +6,15 @@ Repository of my small python projects that doesn\`t require their own repositor
 
 ### Whats new
 
-- HISTORY!!!
+- Auto-delete of history
 
-- Auto-saving actions into file
+- Percentage update
 
-- You can delete or read them
+- You can now use different numbers (pi, e, your last number)
 
 ### Features
 
-- History of actions
+- History of actions and auto-deletion
 
 - Basic commands (+, -, \* \*, /)
 
@@ -28,14 +28,9 @@ Repository of my small python projects that doesn\`t require their own repositor
 
 ### Todo
 
-1. Update list info (im too tired to make this today)
+1. Language choice
 
-2. Auto-delete of actions (I will try this but I think that wouldn\`t work)
+2. History of settings
 
-3. More operations (or not)
+3. More operations
 
-4. More settings (if I get ideas)
-
-5. Make history of settings (json file so its will be on the end)
-
-6. Language choice (That will be hell)
