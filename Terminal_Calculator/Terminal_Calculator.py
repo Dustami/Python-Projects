@@ -41,34 +41,40 @@ trigon_list = {
     ('atan', 'rad'): lambda a: math.atan(a),
     }
 #Initial settings
-rounder = 12
-deleter = 2
-size = 10
+with open('Settings.json', 'r', encoding='utf-8') as file:
+    json.load
+    settings = json.load(file)
+rounder = settings['rounder_config']
+deleter = settings['deleter_config']
+size = settings['size_config']
 answer = 0
 #Start
 print('Welcome to Terminal Calculator!\nDon`t know commands? Try to print \'help\'!')
 while True:
     try:
         enter = input('> ').lower()
-        enter = enter.replace('pi', str(math.pi))
-        enter = enter.replace('e', str(math.e))
-        enter = enter.replace('ans', str(answer))
         result = None
 #Operations
     #Program Commands
-        commands_match = re.match(r'^\s*(round)\s*(\d+)\s*$', enter)
+        commands_match = re.match(r'^\s*(rounder|deleter|size)\s*(\d+)\s*$', enter)
         if commands_match:
-            #Used for commands with numbers
+        #Settings
             command = commands_match.group(1)
             command_num = int(commands_match.group(2))
-            if command == 'round':
+            if command == 'rounder':
                 rounder = command_num
+                settings['rounder_config'] = command_num
             elif command == 'deleter':
                 if command_num%2 == 0:
                     deleter = command_num
+                    settings['deleter_config'] = command_num
             elif command == 'size':
                 if command_num%2 == 0:
                     size = command_num
+                    settings['size_config'] = command_num
+            with open('Settings.json', 'w', encoding='utf-8') as file:
+                json.dump(settings, file, indent=4)
+        #Info
         elif enter == 'help':
             print('To use calculator print what you want (Example: 1+1; 1-1; etc)\nYou can also print \'list\' for more details!')
         elif enter == 'list':
@@ -130,12 +136,17 @@ lg_x — logarithm with base 2
 ''')
         elif enter == 'exit':
             break
+        #History
         elif enter == 'history':
             with open('History.txt', 'r', encoding='utf-8') as file:
                 print(f'___HISTORY___\n{file.read().strip()}')
         elif enter == 'history del':
             with open('History.txt', 'w', encoding='utf-8') as file:
                 pass
+    #Replacing math symbols in numbers
+        enter = enter.replace('pi', str(math.pi))
+        enter = enter.replace('e', str(math.e))
+        enter = enter.replace('ans', str(answer))
     #Search
         basic_match = re.match(r'^\s*(\d+\.?\d*)\s*([-+*/^])\s*(\d+\.?\d*)\s*$', enter)
         sqrt_match = re.match(r'^\s*(sqrt)\s*(\d+\.?\d*)\s*$', enter)
